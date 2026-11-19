@@ -110,8 +110,8 @@ Before proposing a lever, write one line for it:
   changes within the test window. A lever on late content can't move light
   players, so name the segments it reaches.
 - If the effect depends on a behaviour change the simulation holds fixed,
-  give the two-bound result (SKILL.md step 7) and the live test that would
-  settle it.
+  give the two-bound result (Simulations, below) and the live test that
+  would settle it.
 
 ## Like-for-like checklist
 
@@ -133,7 +133,33 @@ cohorts. Most "anomalies" come from mismatched definitions.
   owned, started or completed, one route stop or the whole route) in the
   code before naming the metric.
 
-## Calibration gate
+## Simulations
+
+Use the repo's simulations or tests (*config: Simulations and tests*). If
+none exists and the question needs one, write a small Python simulation,
+such as a Monte Carlo of reward rolls or a 30-day economy for each player
+type. Save it next to the workbook, as `<workbook dir>/sim/<system>_sim.py`,
+not in a temp folder, so the next run can re-use it. Report its seed and
+number of runs.
+
+**Defaults**, because the opposite choices overstate income by large
+factors:
+
+- Feed it observed or benchmark inputs, such as the real attempts-per-level
+  distribution, and label any input you assumed.
+- Pin behaviour inputs to live data: what players buy, when, how much they
+  spend and the content mix.
+- Sample real choices from the live distribution. The simulated player
+  never optimises, because real players don't pick the best option.
+- Model shared capacity and saturation exactly as the game's code does.
+- Behaviour you don't know runs as **two bounds**, such as "buys the same
+  thing at the new price" and "keeps the same budget and buys cheaper". If
+  a change shows its effect only through a behaviour the simulation holds
+  fixed, say so, and name the live test that would show it.
+- After any recalibration, re-run every option that depends on it in the
+  same turn, and update their cards.
+
+### Calibration gate
 
 A simulation counts as **Measured** only after it reproduces live
 **progress** and **income** at fixed times since install, for every
@@ -147,9 +173,8 @@ play-time segment, within a stated tolerance (±25% by default).
   request the data that would measure it.
 - Check the fit against a second target it wasn't fitted to, for example
   fit to level and then check income.
-- Without player data (`--no-data`) there is nothing to calibrate against,
-  so every simulation stays `not calibrated` and relies on the sensitivity
-  check instead.
+- Without player data there's nothing to calibrate against: see
+  `no-data.md`.
 
 ## Validation ladder
 
@@ -173,6 +198,6 @@ set a target from a simulation alone.
 Without player data there's no Observed evidence, except playtest data,
 which comes from a few testers and not the market. Benchmarks become the main
 evidence, and simulations need a sensitivity check across the benchmark range
-(see SKILL.md, `--no-data`).
+(`no-data.md`).
 
 If two levels disagree, say so and say which one you trust and why.

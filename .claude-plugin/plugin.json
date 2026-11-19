@@ -1,6 +1,6 @@
 {
   "name": "gd",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Game design commands for mobile games: feature GDDs with mockups, implementation from a GDD, feature code review, QA GDDs with device captures, spreadsheet-driven balancing, and final art with GPT Image.",
   "author": {
     "name": "Infinity Games"

@@ -3,6 +3,24 @@
 The defaults for the report page. They exist because each one was asked
 for, one turn at a time, in real reviews.
 
+## Sections
+
+The template's sections, in order. Delete the ones that are empty.
+
+- **In short:** at most 4 bullets.
+- **Live baseline** (SKILL.md step 1), with its unconfirmed values marked.
+- **Evidence:** the data exports (source, range, rows), the games
+  researched, the simulations (seed, runs, calibration status, which inputs
+  are assumed or fitted), and the segment definitions.
+- **Recommendations:** the cards (below), in tier order.
+- **Enablers:** telemetry, gating code, test-evaluation rules.
+- **Sync:** what was synced to code, and the remote-config payload the user
+  has to push, with a Copy button.
+- **Data needed:** one copy-ready prompt per open request (conventions §5b).
+  With `--no-data`, the data plan from `no-data.md` instead.
+- **Watch after release:** the metric, its baseline and its source.
+- **Workbook sheets:** the sheets the report uses, each linked.
+
 ## Structure
 
 - **One card per recommendation**, in tier order (High, Medium, Low), then
