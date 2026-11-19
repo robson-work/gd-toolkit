@@ -17,7 +17,9 @@ data arrives, the same report is updated.
 Read `<plugin-root>/shared/conventions.md` and the repo config first.
 Then read `<skill-dir>/references/workbook-format.md` (the workbook
 contract) and `<skill-dir>/references/balance-checks.md` (what to
-check).
+check). Read `<skill-dir>/references/data-request-template.md` before
+writing a data request, and `<skill-dir>/references/report-rules.md`
+before writing the report.
 
 ## Modes
 
@@ -43,6 +45,17 @@ guesses. A simulation projects what a change will do; it doesn't say what
 the right number is. You write to the workbook only through the script, and
 you never overwrite a value the GD set without their approval.
 
+**The code answers first.** When the model and the live data disagree, or
+you're unsure what a metric counts, read the code path that produces it
+before you form a hypothesis or ask: the event emitter, what its counter
+counts, the formula and any filters.
+
+**When your own check fails, fix it and carry on.** If calibration fails, a
+sheet is missing or data is missing, change the model, add the sheet or
+write the data prompt in the same turn. Don't report "the simulator needs
+fixing" and stop. Ask only when the fix needs the user, such as data
+access or a design decision.
+
 ```sh
 BB="<skill-dir>/scripts/run.sh"   # creates its own venv with openpyxl on first run
 "$BB" <command> <workbook> …               # init | dump | diff | ack | owners | apply | link | sync-status | mark-synced
@@ -64,6 +77,32 @@ Before judging any number, understand the system as the code runs it:
   reward rolls, level gates, and what feeds what (the loops).
 - Note the systems it touches, such as currencies, other items or progression,
   and the values those already use.
+- **Trace what each metric depends on:** what grants progress (XP, levels),
+  whether currency can buy progress at all, and which levers only change
+  the balance on hand. Step 7's lever map starts here.
+
+### 1b. Live baseline
+
+The code defaults are not what players run. Before any modelling, write a
+**Live baseline** table with one row per tunable value the analysis rests on:
+
+| Value | Code default | Live value | Source | Platforms | Population |
+|---|---|---|---|---|---|
+
+- **Source:** a remote-config export, analytics, the code, or `unconfirmed`.
+- **Population:** all players, a test arm, or a segment.
+- Look for each of these in the code, the remote config and the exports.
+  Ask only about what you can't find:
+  - remote-config overrides, including a whole variant replacing a curve,
+    not only one changed parameter;
+  - values that differ by platform, or systems live on one platform only;
+  - flags that apply to one segment only, such as incentivised users,
+    testers or an A/B arm;
+  - game-speed or clock multipliers.
+- Where the shape of the live data can confirm a value, back-solve it, for
+  example progress needed per level against each formula variant.
+- Mark each value you can't confirm, and say which conclusions depend on
+  it. The baseline goes into the report.
 
 ## 2. Load the workbook, the GD's edits and the last report
 
@@ -130,13 +169,26 @@ are not the market. Then go to 4b.
 - Look first in *config: Live data* and the repo's data folders for exports
   that cover the current build and the last 14 days or more.
 - If they're missing or stale, pull them yourself when the config gives you
-  access (such as a BigQuery export or a bucket). Otherwise, write a data
-  request for each one, as conventions §5b describes: a copy-ready prompt
-  naming the tool, the report, the metric, the filters, the absolute date
-  range, the minimum sample, the CSV columns and the file name to save it
-  as. Don't wait for the data: carry on with benchmarks, mark each gap
-  `DATA NEEDED: DRn`, and mark the targets that rest on benchmarks alone as
-  lower confidence.
+  access (such as a BigQuery export or a bucket). Otherwise, write the data
+  request as conventions §5b describes, using
+  `data-request-template.md`. Don't wait for the data: carry on with
+  benchmarks, mark each gap `DATA NEEDED: DRn`, and mark the targets that
+  rest on benchmarks alone as lower confidence.
+- **Ask for everything in one go.** List everything the analysis and a
+  calibrated simulation will need (step 7), and ask for it in one
+  self-contained prompt per tool or analyst. That covers:
+  - the cohort, the exclusions and the play-time segments;
+  - the live baseline values still unconfirmed;
+  - play time, sessions and ad use;
+  - purchases and spend;
+  - balance on hand and progress at fixed times since install;
+  - behaviour: what players build or choose, and how many owned units are
+    actually in use.
+  Data that arrives in four rounds means four rounds of rework.
+- **Check the event is sent before asking for it.** Look in the code for
+  analytics allowlists, sampling and tier filters. If the client never
+  sends it, fix the code, say the data arrives only after a release, and
+  mark the request `data-status="future"`.
 - Interrogate every number before using it: the sample size and window,
   whether the event fires when you think it does (retries, resume from
   background), mix shifts in traffic, the build filter, and incomplete data
@@ -204,6 +256,12 @@ Compute metrics in Python from the dumped input values. Don't trust a stale
 cached formula value. Write the results into `Targets.actual`, with `source`
 and `status`, through `apply`.
 
+Before reporting an anomaly between our numbers and the model, trace the
+code path of the live metric (core principle), and re-measure both sides
+with the same cohort, window and exclusions (the like-for-like checklist
+in `balance-checks.md`). Most anomalies come from definitions that don't
+match.
+
 ## 7. Validate and propose
 
 For each problem, design the smallest change that brings the metric back
@@ -216,11 +274,39 @@ there isn't one:
 2. **Benchmark:** where the proposed value sits in the competitor range.
 3. **Measured:** the repo's simulations or tests (*config: Simulations and
    tests*). If none exists and the question needs one, write a small Python
-   simulation in the scratchpad, such as a Monte Carlo of reward rolls or a
-   30-day economy for each player type. Feed it observed or benchmark
-   inputs, such as the real attempts-per-level distribution. Label any input
-   you assumed, and report the seed and number of runs.
+   simulation, such as a Monte Carlo of reward rolls or a 30-day economy for
+   each player type. Save it next to the workbook, as
+   `<workbook dir>/sim/<system>_sim.py`, not in a temp folder, so the next
+   run can re-use it. Feed it observed or benchmark inputs, such as the real
+   attempts-per-level distribution. Label any input you assumed, and report
+   the seed and number of runs. A simulation passes the **calibration gate**
+   (`balance-checks.md`) before its results count as Measured.
 4. **Estimated:** closed-form maths from the workbook values.
+
+**Simulation defaults**, because the opposite choices overstate income by
+large factors:
+
+- Pin behaviour inputs to live data: what players buy, when, how much they
+  spend and the content mix.
+- Sample real choices from the live distribution. The simulated player
+  never optimises, because real players don't pick the best option.
+- Model shared capacity and saturation exactly as the game's code does.
+- Behaviour you don't know runs as **two bounds**, such as "buys the same
+  thing at the new price" and "keeps the same budget and buys cheaper". If
+  a change shows its effect only through a behaviour the simulation holds
+  fixed, say so, and name the live test that would show it.
+- After any recalibration, re-run every option that depends on it in the
+  same turn, and update their cards.
+
+**Lever map.** Every proposal gets one line in `balance-checks.md` §8
+form: lever → mechanism → metric it moves → why players can't route
+around it. A lever that can't fill in the last part is not a proposal yet.
+
+**Rank by revenue impact.** Order the proposals by their likely effect on
+revenue per install at D14 and D30, in tiers: High, Medium, Low, plus
+Enabler for telemetry, gating code and test rules. Give each one a
+one-line reason, and say the tier is a judgement unless it was measured.
+When new evidence changes how strong one lever is, re-rank the whole list.
 
 **`--no-data`:** simulation carries more of the weight, so make it honest:
 
@@ -239,9 +325,9 @@ present an estimate as a test result, and never present a simulation run on
 assumed inputs as proof. A proposal that rests only on a simulation is low
 confidence: say so, and name the data that would settle it.
 
-Present the proposals as a table with the columns Sheet/id/field, Current,
-Proposed, Benchmark range, Why, Evidence (and its kind) and Owner (AI or GD).
-Then:
+Present the proposals in chat as a table in tier order, with the columns
+Tier, Sheet/id/field, Current, Proposed, Benchmark range, Lever → metric,
+Evidence (and its kind) and Owner (AI or GD). Then:
 
 - **AI-owned values:** apply them once the user has approved the batch.
   Where the trade-off is real, ask with the question tool and give 3 or more
@@ -274,15 +360,21 @@ Once the changes are applied to the workbook:
 Write the report page at *config: Balance → Report*, starting from
 `<skill-dir>/assets/balance-report-template.html` and following the HTML
 rules in the conventions. If the system already has a report, update it and
-bump its revision; don't create a second file. It holds:
+bump its revision; don't create a second file. Follow
+`report-rules.md`, which covers the structure, the language and the charts.
+It holds:
 
 - In short: at most 4 bullets.
+- The live baseline (step 1b), with its unconfirmed values marked.
 - The evidence used: the data exports (source, range, rows), the games
-  researched, and the simulations (seed, runs, which inputs are assumed).
-- Findings, each with its evidence kind, and proposals with their status
-  (applied, approved by GD, or pending approval).
+  researched, and the simulations (seed, runs, calibration status, which
+  inputs are assumed or fitted).
+- **One card per recommendation**, in tier order. Each card holds its
+  change, lever line, evidence, chart and status. There are no separate
+  findings and proposals lists. Enablers go in their own group.
 - What was synced to code, and the remote-config payload the user has to
   push, with a Copy button.
+- The workbook sheets the report uses, each linked.
 - **Data needed:** one copy-ready prompt per open request (conventions §5b).
 - What to watch after release: the metric, its baseline and its source.
 - **With `--no-data`, a data plan in place of open data requests:**
@@ -296,6 +388,10 @@ bump its revision; don't create a second file. It holds:
     data, each with `data-status="future"`. Their date ranges say "the first
     14 days with data, from the release or soft launch", since the dates
     aren't known yet.
+
+Before writing the file, and before every later update, run the
+consistency pass in `report-rules.md`, then open the page at desktop
+width and at 360 px.
 
 In chat, give the report path, the workbook path, the sheets created or
 extended, the GD edits acknowledged, the changes applied, and every open data
@@ -317,8 +413,12 @@ conventions §5b, plus:
 - Re-run the checks the data touches (step 6), and redo the proposals it
   changes (step 7). A change already applied that the data contradicts gets a
   new proposal, not a silent revert. GD-owned values still need approval.
-- Update the report in place: the evidence, findings and proposals, and the
-  request marked received.
+- Update the report in place: the live baseline, the evidence and the
+  cards, re-ranked if the data changed a lever's strength, and the request
+  marked received. Remove cards the data shows were not problems; don't
+  mark them "Resolved".
+- If a simulation depends on the data, recalibrate it and re-run every
+  option that uses it in the same turn.
 - **When player data first exists:** the first run without `--no-data` (or
   after *config: Live data* stops being `none`) turns the `future` prompts
   into open requests with real dates, compares the first numbers with the

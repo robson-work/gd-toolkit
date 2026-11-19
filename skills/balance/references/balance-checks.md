@@ -54,6 +54,12 @@ measured or observed.
 - **Hint and booster rescue:** does the 10x failer earn enough help to get
   past the level, or does the free help remove the challenge for everyone
   else?
+- **Headroom:** for each segment, at fixed times since install, divide the
+  balance on hand by lifetime spend. Well above 1 means a cost increase
+  smaller than that multiple won't bind for that segment.
+- **Unused capacity:** the share of owned units (buildings, slots,
+  vehicles) that are actually earning. A gap between bought and in use
+  inflates any simulation that assumes all of them earn.
 
 ## 5. Difficulty (puzzle and level-based games)
 
@@ -86,6 +92,65 @@ When adding an item, enemy, level or reward:
 2. Run checks 1–4 with the new row included.
 3. Write it with `"status": "new"` until it's approved.
 
+## 8. Lever → metric map
+
+Before proposing a lever, write one line for it:
+**lever → mechanism → metric it moves → why players can't route around it.**
+
+- **Progress versus currency:** if progress comes from activity (actions,
+  plays, deliveries) and currency can't buy progress, then prices, sinks
+  and income multipliers change only the balance on hand, not the pace.
+  Say so instead of proposing them as pace levers.
+- **Substitution:** if a cheaper option is always available, raising the
+  price of the top option doesn't constrain anyone. They buy the cheaper
+  one.
+- **Headroom:** a cost increase smaller than a segment's balance-to-spend
+  ratio (check 4) won't bind for that segment.
+- **Reach:** the share of each segment that reaches the content the lever
+  changes within the test window. A lever on late content can't move light
+  players, so name the segments it reaches.
+- If the effect depends on a behaviour change the simulation holds fixed,
+  give the two-bound result (SKILL.md step 7) and the live test that would
+  settle it.
+
+## Like-for-like checklist
+
+Run it before any comparison between live data and a model, or between two
+cohorts. Most "anomalies" come from mismatched definitions.
+
+- **Same population:** never compare players still active on day N
+  (survivors) with a simulation of every player. Either simulate survivors
+  or measure everyone.
+- **Hold play time constant:** the main calibration target is progress at
+  fixed times since install (hours for idle games, days for level-based
+  games), grouped by minutes played in that window: light, mid and heavy
+  players.
+- **One chart, one definition:** every number in a chart uses the same
+  cohort, window and exclusions. If that's impossible, footnote the mix.
+- **Windows:** check the day boundaries, the timezone and whether day 0
+  counts. An off-by-one window creates false anomalies.
+- **Event meaning:** check what the counter actually counts (bought or
+  owned, started or completed, one route stop or the whole route) in the
+  code before naming the metric.
+
+## Calibration gate
+
+A simulation counts as **Measured** only after it reproduces live
+**progress** and **income** at fixed times since install, for every
+play-time segment, within a stated tolerance (±25% by default).
+
+- Until it passes, show results only relative to the current values, and
+  label them `not calibrated` in the evidence kind and the chart subtitle.
+  Never rank levers on an uncalibrated simulation's absolute numbers.
+- Allow at most one fitted parameter per segment, such as the share of
+  owned units in use. Label it `FITTED`, say what it was fitted to, and
+  request the data that would measure it.
+- Check the fit against a second target it wasn't fitted to, for example
+  fit to level and then check income.
+- Without player data (`--no-data`) there is nothing to calibrate against,
+  so every simulation stays `not calibrated` and relies on the sensitivity
+  check instead.
+
 ## Validation ladder
 
 Prefer the strongest evidence available, and always label which one you used:
@@ -95,8 +160,10 @@ Prefer the strongest evidence available, and always label which one you used:
 2. **Benchmark:** competitor and reference-game numbers from `Benchmarks`,
    from at least two games for a range.
 3. **Measured:** the repo's simulations or tests (*config: Simulations and
-   tests*), or a Python simulation you write in the scratchpad. Report its
-   seed and number of runs. Its inputs come from observed data or benchmarks;
+   tests*), or a Python simulation saved next to the workbook. It counts as
+   Measured only after passing the calibration gate; before that, its
+   results are relative only and labelled `not calibrated`. Report its seed
+   and number of runs. Its inputs come from observed data or benchmarks;
    any assumed input is labelled, and the result is then low confidence.
 4. **Estimated:** closed-form maths from the workbook values.
 

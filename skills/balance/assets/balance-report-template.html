@@ -6,8 +6,9 @@
 <title>{{System}} — Balance</title>
 <!--
   Balance report template (gd plugin). Replace every {{…}}; delete sections
-  that are empty. One line per element. The workbook holds the numbers; this
-  page holds the findings, the proposals and the data still needed.
+  that are empty. Follow references/report-rules.md and run its consistency
+  pass before every write. The workbook holds the numbers; this page holds
+  the recommendation cards and the data still needed.
   Keep the data-dr / data-status attributes: /gd:balance reads them to update
   the page when the data arrives.
 -->
@@ -55,6 +56,23 @@
   .dr { margin: 12px 0; padding: 10px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
   .dr > b { display: block; margin-bottom: 4px; }
   .dr[data-status="received"] { opacity: .75; }
+  .card { margin: 14px 0; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+  .card h3 { margin: 0 0 2px; font-size: 1.05rem; }
+  .card .lead { margin: 0 0 10px; color: var(--muted); }
+  .heads { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 8px 0; }
+  .heads div { min-width: 0; }
+  .heads b { display: block; font-size: 1.4rem; line-height: 1.2; }
+  .heads span { color: var(--muted); font-size: .8rem; }
+  .rows { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 2px 12px; margin: 8px 0; font-size: .88rem; }
+  .rows dt { color: var(--muted); }
+  .rows dd { margin: 0; min-width: 0; }
+  .tier { color: var(--muted); font: 600 .72rem system-ui; letter-spacing: .05em; text-transform: uppercase; }
+  .chart { margin: 10px 0 0; }
+  .chart figcaption { color: var(--muted); font-size: .8rem; margin-bottom: 6px; }
+  .bar { display: grid; grid-template-columns: minmax(64px, 30%) minmax(0, 1fr); align-items: center; gap: 8px; margin: 3px 0; font-size: .82rem; }
+  .bar i { display: block; height: 16px; border-radius: 4px; background: var(--accent); }
+  .bar.base i { background: var(--muted); opacity: .45; }
+  .bar em { font-style: normal; color: var(--muted); margin-left: 6px; }
   footer { margin-top: 40px; color: var(--muted); font-size: .85rem; }
 </style>
 </head>
@@ -68,6 +86,7 @@
     <li><b>Updated</b> {{YYYY-MM-DD}}</li>
     <li><b>Workbook</b> <code>{{balance/game-balance.xlsx}}</code></li>
     <li><b>Data</b> {{2 requests open | no player data}}</li>
+    <li><b>Simulation</b> {{calibrated ±25% | not calibrated | none}}</li>
   </ul>
 
   <h2><span class="n">1</span>In short</h2>
@@ -75,43 +94,66 @@
     <li>{{At most 4 bullets: the biggest problem, the fix, the confidence, what's still unknown}}</li>
   </ul>
 
-  <h2><span class="n">2</span>Evidence</h2>
+  <h2><span class="n">2</span>Live baseline</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Value</th><th>Code default</th><th>Live</th><th>Source</th><th>Platforms</th><th>Population</th></tr></thead>
+    <tbody>
+      <tr><td><code>{{xp_curve}}</code></td><td>{{variant A}}</td><td>{{variant C (whole curve)}}</td><td>{{remote config export YYYY-MM-DD}}</td><td>{{both}}</td><td>{{all players}}</td></tr>
+      <tr><td><code>{{energy_cost}}</code></td><td>{{5}}</td><td>{{5}}</td><td><span class="gap">{{unconfirmed}}</span></td><td>{{Android only}}</td><td>{{all players}}</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted">{{Unconfirmed values, and the conclusions that depend on them}}</p>
+
+  <h2><span class="n">3</span>Evidence</h2>
   <div class="table-scroll"><table>
     <thead><tr><th>Kind</th><th>Source</th><th>Range</th><th>Size</th></tr></thead>
     <tbody>
       <tr><td>Observed</td><td>{{devtodev, pulled YYYY-MM-DD}}</td><td>{{YYYY-MM-DD..YYYY-MM-DD, build ≥ x}}</td><td>{{12,400 users}}</td></tr>
       <tr><td>Benchmark</td><td>{{Game A, Game B, Game C (Benchmarks sheet)}}</td><td>{{accessed YYYY-MM-DD}}</td><td>{{14 numbers}}</td></tr>
-      <tr><td>Measured</td><td>{{30-day economy sim}}</td><td>{{seed 7, 10,000 runs}}</td><td>{{inputs: DR1 pending}}</td></tr>
+      <tr><td>Measured</td><td>{{30-day economy sim, balance/sim/economy_sim.py}}</td><td>{{seed 7, 10,000 runs}}</td><td>{{calibrated ±25% on level and income; fitted: share of units in use}}</td></tr>
     </tbody>
   </table></div>
+  <p class="muted">{{Segments: light = under N min, mid = N–M min, heavy = over M min played in the window}}</p>
 
-  <h2><span class="n">3</span>Findings</h2>
-  <div class="table-scroll"><table>
-    <thead><tr><th>Severity</th><th>Sheet / id / field</th><th>Problem</th><th>Target</th><th>Evidence</th></tr></thead>
-    <tbody>
-      <tr><td><span class="tag bad">High</span></td><td><code>{{Boosters / hint / price_coins}}</code></td><td>{{3× the competitor median}}</td><td>{{80–150}}</td><td>{{Benchmark}}</td></tr>
-      <tr><td><span class="tag open">Medium</span></td><td><code>{{Levels / level_012 / moves}}</code></td><td>{{Suspected spike}} · <span class="gap">DATA NEEDED: DR1</span></td><td>{{≤ 4 attempts median}}</td><td>{{Estimated}}</td></tr>
-    </tbody>
-  </table></div>
+  <h2><span class="n">4</span>Recommendations</h2>
+  <!-- One card per recommendation, in tier order (High, Medium, Low). Rules in references/report-rules.md.
+       Link between cards by anchor id, never by number. -->
+  <section class="card" id="rec-{{slug}}">
+    <div class="tier">{{High}} revenue impact · {{judgement | measured}}</div>
+    <h3>{{Cut the hint price to 120}} <span class="tag ok">{{Ready to build}}</span></h3>
+    <p class="lead">{{Light players run out of hints at level 12 and quit there.}}</p>
+    <div class="heads">
+      <div><b>{{+0.6}}</b><span>{{Levels by day 7 vs today, light players}}</span></div>
+      <div><b>{{−4%}}</b><span>{{Coins on hand at day 7}}</span></div>
+    </div>
+    <p>{{Why, 1–2 sentences: lever → mechanism → metric, and why players can't route around it.}}</p>
+    <dl class="rows">
+      <dt>Change</dt><dd><code>{{Boosters / hint / price_coins}}</code> {{300 → 120}}</dd>
+      <dt>Workbook</dt><dd><a href="{{../../balance/game-balance.xlsx}}">{{Boosters}}</a></dd>
+      <dt>Evidence</dt><dd>{{Benchmark (3 games) · Measured, calibrated}}</dd>
+    </dl>
+    <figure class="chart">
+      <figcaption>{{Level on day 7, light players · 30-day sim, calibrated ±25% · rows that don't change are dropped}}</figcaption>
+      <div class="bar base"><span>{{Today}}</span><span><i style="width: {{62}}%"></i><em>{{8.1}}</em></span></div>
+      <div class="bar"><span>{{Price 120}}</span><span><i style="width: {{67}}%"></i><em>{{8.7}}</em></span></div>
+    </figure>
+  </section>
 
-  <h2><span class="n">4</span>Proposals</h2>
-  <div class="table-scroll"><table>
-    <thead><tr><th>Sheet / id / field</th><th>Current</th><th>Proposed</th><th>Benchmark range</th><th>Why</th><th>Owner</th><th>Status</th></tr></thead>
-    <tbody>
-      <tr><td><code>{{Boosters / hint / price_coins}}</code></td><td>{{300}}</td><td>{{120}}</td><td>{{80–150}}</td><td>{{Brings it to the median}}</td><td>{{AI}}</td><td><span class="tag ok">{{Applied}}</span></td></tr>
-    </tbody>
-  </table></div>
+  <h2><span class="n">5</span>Enablers</h2>
+  <ul>
+    <li>{{Send the unit_in_use event (not on the analytics allowlist) · blocks option B · Waiting on release}}</li>
+  </ul>
 
-  <h2><span class="n">5</span>Sync</h2>
+  <h2><span class="n">6</span>Sync</h2>
   <ul>
     <li>{{Synced to code: N values (see the Sync sheet)}}</li>
   </ul>
   <div class="snippet"><pre>{{"remote_config_key": {"field": 1}}}</pre><button class="copy" type="button">Copy</button></div>
 
-  <h2 id="data-needed"><span class="n">6</span>Data needed</h2>
+  <h2 id="data-needed"><span class="n">7</span>Data needed</h2>
   <div class="dr" data-dr="DR1" data-status="open">
     <b>DR1 · {{Attempts to complete, levels 1–60}} <span class="tag open">Open</span></b>
-    <div class="muted">{{Settles finding Levels / level_012. Save as data/devtodev/YYYY-MM-DD_attempts_levels-1-60.csv}}</div>
+    <div class="muted">{{Settles card #rec-level-12. Save as data/devtodev/YYYY-MM-DD_attempts_levels-1-60.csv}}</div>
     <div class="snippet"><pre>{{From devtodev, Progression → level events, export the attempts needed to complete each level for levels 1–60.
 Filters: build 2.4 or later, both platforms, all countries, non-payers only.
 Range: 2026-11-01 to 2026-11-14, aggregated over the whole range.
@@ -134,9 +176,14 @@ Save as 2026-11-19_attempts_levels-1-60.csv.}}</pre><button class="copy" type="b
     <div class="muted">File data/devtodev/… · 58 rows · used in §3 and §4</div>
   </div> -->
 
-  <h2><span class="n">7</span>Watch after release</h2>
+  <h2><span class="n">8</span>Watch after release</h2>
   <ul>
     <li>{{Metric · baseline (source) · what would mean the change failed}}</li>
+  </ul>
+
+  <h2><span class="n">9</span>Workbook sheets</h2>
+  <ul>
+    <li><a href="{{../../balance/game-balance.xlsx}}">{{Boosters}}</a> · {{what this report uses from it}}</li>
   </ul>
 
   <footer>{{Related: workbook, GDD}} · Written with /gd:balance</footer>

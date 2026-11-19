@@ -87,6 +87,14 @@ next run checks it and updates the same doc, saying what changed.
   and 2–4 top genre competitors. Their numbers go in the **Benchmarks** sheet
   with source links. Simulations project a change; they never set a target
   alone. Every result is labelled Observed, Benchmark, Measured or Estimated.
+- **Live values first.** Each run starts with a live-baseline table (remote
+  overrides, platform and segment differences, clock multipliers), and asks
+  for all the data it needs in one copy-ready prompt.
+- **Calibrated simulations.** A simulation counts as Measured only once it
+  reproduces live progress and income for light, mid and heavy players;
+  until then, results are relative only and labelled `not calibrated`.
+- **Every lever is traced** to the metric it moves and checked for ways
+  players can route around it, then ranked by likely revenue impact.
 - **Edit freely in Excel.** Blue cells are inputs and black cells are formulas.
   Every sheet has an `id` column.
 - **Your edits are respected.** Each run detects them, logs them as `by=GD`, and
@@ -95,8 +103,8 @@ next run checks it and updates the same doc, saying what changed.
   values.
 - **Sync** maps each value to its place in the code and tracks what's been synced.
 - **Report page:** each run writes or updates an HTML report at the config's
-  `Report` path, with findings, proposals, the remote-config payload and the
-  data prompts.
+  `Report` path: one card per recommendation with its own chart, the
+  remote-config payload and the data prompts.
 - **Close the file before running** `/gd:balance`. Keep charts and images in a
   separate workbook, because the script refuses to write a file that has them.
 

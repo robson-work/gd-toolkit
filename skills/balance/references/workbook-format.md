@@ -61,7 +61,9 @@ resolved `=C2/D2`-style references.)
 - `Benchmark (<games>; <accessed date>)`: taken from the `Benchmarks` rows for
   those games. One game alone is written `Benchmark (reference: <game>; <date>)`.
 - `Measured (<test or sim> <date>)`: produced by running a test or simulation.
-  Add `, assumed inputs` if any of its inputs were not observed or benchmarked.
+  Add `, assumed inputs` if any of its inputs were not observed or benchmarked,
+  `, fitted <parameter>` if one was fitted, and `, not calibrated` if the
+  simulation hasn't passed the calibration gate in `balance-checks.md`.
 - `Estimated (model)`: calculated in the workbook or by Python from its values.
 
 ### Example: `Benchmarks`
