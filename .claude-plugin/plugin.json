@@ -1,0 +1,25 @@
+{
+  "name": "gd",
+  "version": "0.4.1",
+  "description": "Game design commands for mobile games: feature GDDs with mockups, implementation from a GDD, feature code review, QA GDDs with device captures, spreadsheet-driven balancing, and final art with GPT Image.",
+  "author": {
+    "name": "Infinity Games"
+  },
+  "license": "UNLICENSED",
+  "keywords": [
+    "game-design",
+    "gdd",
+    "balancing",
+    "qa",
+    "mobile-games"
+  ],
+  "skills": [
+    "./skills/setup",
+    "./skills/feature",
+    "./skills/make",
+    "./skills/review",
+    "./skills/gdd",
+    "./skills/asset",
+    "./skills/balance"
+  ]
+}

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{Feature}} — GDD</title>
+<!--
+  Feature GDD template (gd plugin). Replace every {{…}}; delete sections the
+  feature doesn't have. Rules: one line per element, say everything once, no
+  text inside a mockup that the player wouldn't see.
+  Retheme the mockups by changing the --m-* tokens to the game's palette.
+-->
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f4ef; --panel: #ffffff; --ink: #24222b; --muted: #6c6875; --line: #e2ddd3;
+    --accent: #e8743b; --ok: #2f8f5b; --new: #3b6fe8; --code: #f0ece4;
+    /* mockup (in-game) palette */
+    --m-bg: #fbf3e6; --m-ink: #2e2a3b; --m-muted: #7a7184; --m-card: #ffffff;
+    --m-line: #eadfcd; --m-accent: #e8743b; --m-accent-ink: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17161b; --panel: #211f27; --ink: #ecebf0; --muted: #a29fad; --line: #34313d;
+      --accent: #f08a55; --ok: #5cc28b; --new: #7d9ff2; --code: #2a2731;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { width: calc(100% - 32px); max-width: 1080px; margin: 0 auto; padding: 32px 0 56px; }
+  .label { color: var(--accent); font: 600 .75rem system-ui; letter-spacing: .06em; text-transform: uppercase; }
+  h1 { margin: 2px 0 6px; font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.15; }
+  h2 { margin: 32px 0 12px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 1.2rem; }
+  h2 .n { color: var(--muted); font-weight: 500; margin-right: 6px; }
+  .pitch { margin: 0 0 12px; max-width: 70ch; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; color: var(--muted); font-size: .85rem; }
+  .meta b { color: var(--ink); font-weight: 600; }
+  ul, ol { margin: 6px 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  code, pre { background: var(--code); border: 1px solid var(--line); border-radius: 6px; font: 13px/1.5 ui-monospace, Menlo, monospace; }
+  code { padding: 1px 5px; overflow-wrap: anywhere; }
+  pre { margin: 0; padding: 12px 84px 12px 12px; overflow-x: auto; }
+  .json { position: relative; margin: 8px 0; }
+  .copy { position: absolute; top: 6px; right: 6px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--ink); font: 600 12px system-ui; cursor: pointer; }
+  .copy:hover { border-color: var(--accent); color: var(--accent); }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th, td { padding: 7px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { color: var(--accent); font-size: .75rem; letter-spacing: .05em; text-transform: uppercase; }
+  .tag { display: inline-block; padding: 0 7px; border-radius: 99px; font: 600 .72rem/1.6 system-ui; vertical-align: 1px; }
+  .tag.ok { background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok); }
+  .tag.open { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+  .tag.new { background: color-mix(in srgb, var(--new) 16%, transparent); color: var(--new); }
+  .muted { color: var(--muted); }
+  /* questions */
+  .q { margin: 10px 0; padding: 10px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  .q > b { display: block; margin-bottom: 4px; }
+  .q li[data-rec] { font-weight: 600; }
+  .q li[data-rec]::after { content: " — recommended"; color: var(--accent); font-weight: 500; }
+  /* screens */
+  .screens { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr)); gap: 16px; }
+  .screen { display: grid; grid-template-columns: 220px 1fr; gap: 14px; padding: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+  @media (max-width: 520px) { .screen { grid-template-columns: 1fr; justify-items: center; } .spec { justify-self: stretch; } }
+  .spec h3 { margin: 0 0 6px; font-size: 1rem; }
+  .sid { display: inline-block; min-width: 28px; margin-right: 6px; padding: 0 6px; border-radius: 6px; background: var(--code); color: var(--muted); font: 600 .75rem/1.7 ui-monospace, Menlo, monospace; text-align: center; }
+  .spec ul { padding-left: 16px; font-size: .88rem; }
+  /* phone mockup kit */
+  .phone { width: 220px; aspect-ratio: 9 / 19.5; padding: 7px; border-radius: 30px; background: #111; box-shadow: 0 6px 18px rgb(0 0 0 / .18); }
+  .ps { position: relative; height: 100%; overflow: hidden; border-radius: 24px; background: var(--m-bg); color: var(--m-ink); font: 11px/1.35 system-ui, sans-serif; display: flex; flex-direction: column; }
+  .pstatus { display: flex; justify-content: space-between; padding: 8px 16px 4px; font: 600 9px system-ui; }
+  .phead { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; }
+  .phead h5 { margin: 0; font-size: 13px; }
+  .pbody { flex: 1; display: flex; flex-direction: column; gap: 7px; padding: 6px 12px; }
+  .pfoot { display: flex; gap: 6px; padding: 10px 12px 14px; }
+  .card { padding: 8px 10px; background: var(--m-card); border: 1px solid var(--m-line); border-radius: 10px; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .row > .grow { flex: 1; }
+  .btn { flex: 1; display: inline-block; padding: 7px 10px; border: 1px solid var(--m-line); border-radius: 9px; background: var(--m-card); color: var(--m-ink); font-weight: 700; text-align: center; }
+  .btn.primary { background: var(--m-accent); border-color: var(--m-accent); color: var(--m-accent-ink); }
+  .btn.ghost { border-color: transparent; background: none; color: var(--m-muted); }
+  .bar { height: 5px; border-radius: 99px; background: var(--m-line); overflow: hidden; }
+  .bar > i { display: block; height: 100%; background: var(--m-accent); }
+  .m-muted { color: var(--m-muted); }
+  .ico { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .veil { position: absolute; inset: 0; background: rgb(0 0 0 / .42); }
+  .popup { position: absolute; left: 12px; right: 12px; top: 50%; transform: translateY(-50%); padding: 14px 12px; background: var(--m-card); border-radius: 14px; text-align: center; }
+  .popup h5 { margin: 0 0 6px; font-size: 14px; }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; padding: 12px; background: var(--m-card); border-radius: 16px 16px 0 0; }
+  .toast { position: absolute; left: 16px; right: 16px; bottom: 26px; padding: 7px 10px; border-radius: 9px; background: #2b2833; color: #fff; text-align: center; }
+  .dim { opacity: .5; }
+  footer { margin-top: 32px; color: var(--muted); font-size: .8rem; }
+</style>
+</head>
+<body>
+<!-- Icon symbols: draw each icon once, reuse with <svg class="ico"><use href="#i-name"/></svg> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8S10 3 7.5 4.5 9 8 12 8zm0 0s2-5 4.5-3.5S15 8 12 8z"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+</svg>
+<main>
+  <div class="label">Game design document · {{area}}</div>
+  <h1>{{Feature}}</h1>
+  <p class="pitch">{{Pitch: at most 2 sentences — what the player does and gets.}}</p>
+  <ul class="meta">
+    <li><b>Status</b> {{Draft | Approved | Implemented | In QA}}</li>
+    <li><b>Revision</b> {{1}}</li>
+    <li><b>Updated</b> {{YYYY-MM-DD}}</li>
+    <li><b>Config</b> <code>{{config_key}}</code></li>
+    <li><b>Target</b> {{version}}</li>
+  </ul>
+
+  <h2><span class="n">1</span>In short</h2>
+  <ul>
+    <li>{{One line, player terms}}</li>
+  </ul>
+
+  <h2 id="decisions"><span class="n">2</span>Decisions</h2>
+  <ul>
+    <li><span class="tag ok">Settled</span> {{Decision}} <span class="muted">({{YYYY-MM-DD}}, {{owner | auto: rule N}})</span></li>
+  </ul>
+
+  <h2><span class="n">3</span>Goal and proof</h2>
+  <ul>
+    <li><b>Problem:</b> {{what the player lacks today}}</li>
+    <li><b>Loop:</b> {{core | progression | meta}} · {{balancing | reinforcing, braked by X from day N}}</li>
+  </ul>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Metric</th><th>Baseline (source)</th><th>Target</th><th>Kill if</th></tr></thead>
+    <tbody><tr><td>{{D7 retention}}</td><td>{{18.2% (devtodev, pulled YYYY-MM-DD, range)}}</td><td>{{+1.0 pp}}</td><td>{{−0.5 pp or worse}}</td></tr></tbody>
+  </table></div>
+
+  <h2><span class="n">4</span>Rules</h2>
+  <ol>
+    <li>{{Rule, one line}}</li>
+  </ol>
+
+  <h2><span class="n">5</span>Screens</h2>
+  <div class="screens">
+    <!-- One .screen per screen/state. Mockup = only real player-facing copy. Spec = only what the picture can't show. -->
+    <article class="screen" id="s1">
+      <div class="phone" role="img" aria-label="{{Screen name}}">
+        <div class="ps">
+          <div class="pstatus"><span>9:41</span><span>▮▮▮</span></div>
+          <div class="pbody dim">
+            <div class="card">{{Home content behind the popup}}</div>
+          </div>
+          <div class="veil"></div>
+          <div class="popup">
+            <svg class="ico" style="width:28px;height:28px;color:var(--m-accent)"><use href="#i-gift"/></svg>
+            <h5>{{Popup title}}</h5>
+            <div class="m-muted">{{Popup line}}</div>
+            <div class="pfoot" style="padding:10px 0 0;flex-direction:column"><span class="btn primary">{{Primary}}</span><span class="btn ghost">{{Later}}</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="spec">
+        <h3><span class="sid">S1</span>{{Screen name}}</h3>
+        <ul>
+          <li><b>When:</b> {{trigger}}</li>
+          <li><b>{{Primary}}:</b> → S2</li>
+          <li><b>{{Later}}:</b> {{closes; shown again? when?}}</li>
+        </ul>
+      </div>
+    </article>
+  </div>
+
+  <h2><span class="n">6</span>Economy</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Item</th><th>Faucet / sink</th><th>Amount</th><th>Cap</th></tr></thead>
+    <tbody><tr><td>{{Hint}}</td><td>{{Faucet: daily bonus}}</td><td>{{1/day}}</td><td>{{none}}</td></tr></tbody>
+  </table></div>
+  <ul>
+    <li><b>Non-payer:</b> {{what they get per day and whether it's enough}}</li>
+    <li><b>Fails 10× on one level:</b> {{what happens}}</li>
+    <li><b>Hoarder:</b> {{balance after 30 days; is it capped?}}</li>
+  </ul>
+
+  <h2><span class="n">7</span>Remote config</h2>
+  <p>Key <code>{{config_key}}</code> · ships {{off}}</p>
+  <div class="json"><pre>{"enabled":false}</pre><button class="copy" type="button">Copy</button></div>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Field</th><th>Effect</th><th>Default</th></tr></thead>
+    <tbody><tr><td><code>enabled</code></td><td>{{Feature on/off}}</td><td><code>false</code></td></tr></tbody>
+  </table></div>
+
+  <h2><span class="n">8</span>Ads, notifications, analytics</h2>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Kind</th><th>Id</th><th>When</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Rewarded</td><td><code>{{placement}}</code></td><td>{{trigger}}</td><td>{{gated by field}}</td></tr>
+      <tr><td>Notification</td><td><code>{{id}}</code></td><td>{{time}}</td><td>{{title}}</td></tr>
+      <tr><td>Event</td><td><code>{{event}}</code></td><td>{{fires when}}</td><td>{{key params}}</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2><span class="n">9</span>Risks</h2>
+  <ul>
+    <li><b>Churn:</b> {{where it could lose players}}</li>
+    <li><b>First session:</b> {{added load, or none}}</li>
+    <li><b>Non-payer:</b> {{does it survive them}}</li>
+  </ul>
+
+  <h2 id="open-questions"><span class="n">10</span>Open questions</h2>
+  <div class="q" data-q="Q1">
+    <b>Q1 · {{Question}}</b>
+    <ol>
+      <li data-rec>{{Recommended option — trade-off}}</li>
+      <li>{{Option — trade-off}}</li>
+      <li>{{Option — trade-off}}</li>
+    </ol>
+  </div>
+
+  <h2><span class="n">11</span>Later</h2>
+  <ul><li>{{Out of scope item}}</li></ul>
+
+  <footer>{{Related docs}} · Written with /gd:feature</footer>
+</main>
+<script>
+  // Copies the JSON beside each button; falls back for file:// pages without the Clipboard API.
+  document.querySelectorAll('.copy').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const text = button.previousElementSibling.textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const area = document.createElement('textarea');
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        area.remove();
+      }
+      button.textContent = 'Copied';
+      setTimeout(() => { button.textContent = 'Copy'; }, 1500);
+    });
+  });
+</script>
+</body>
+</html>

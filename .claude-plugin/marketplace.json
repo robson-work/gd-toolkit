@@ -1,0 +1,16 @@
+{
+  "name": "gd-toolkit",
+  "owner": {
+    "name": "Infinity Games"
+  },
+  "description": "Infinity Games game design toolkit for Claude Code.",
+  "plugins": [
+    {
+      "name": "gd",
+      "source": "./",
+      "description": "Feature GDDs, implementation from a GDD, feature review, QA GDDs and spreadsheet-driven balancing.",
+      "category": "game-design",
+      "keywords": ["game-design", "gdd", "balancing", "qa"]
+    }
+  ]
+}
