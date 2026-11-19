@@ -43,6 +43,10 @@ default, or a rule that contradicts another.
   `owner` or `auto: rule N`, and update the sections it affects. The GDD stays
   the source of truth, and the code follows it.
 
+Open data requests in the GDD (`data-dr`) don't block the build. If their
+data has arrived, update the GDD first (conventions §5b); otherwise list them
+in the report.
+
 Don't start the code while any question is unresolved. If a question is
 deferred, build the recommended option and say so.
 

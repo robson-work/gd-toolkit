@@ -81,6 +81,52 @@ ask anyway. Auto mode is for small questions, not for owner-level calls.
 - Only state facts that are in the code or the docs. Mark anything you assumed
   with `[ASSUMED]`.
 
+## 5b. Requesting data
+
+When a doc or report needs a number you don't have, don't stall and don't
+guess silently.
+
+- **Pull it yourself** when the config gives you access (an export folder,
+  BigQuery, a bucket). Then no request is needed.
+- **Otherwise, request it in the doc.** Finish the doc with what you have,
+  labelled Estimated or Benchmark, mark each gap `DATA NEEDED: DR1`, and add
+  a **Data needed** section with one block per request, `DR1…DRn`.
+- **Each request is a copy-ready prompt**, written so the user can paste it
+  as-is into the analytics tool's AI assistant, a SQL or BigQuery assistant,
+  or a message to an analyst. It says:
+  - what it's for (the section or finding it settles);
+  - the tool, picked from the source the repo trusts for that question;
+  - the report or event, and the exact metric definition;
+  - the filters: build or version, platform, country, payer segment;
+  - the date range as absolute dates, and the granularity (per day, per level);
+  - the minimum sample that makes it usable;
+  - the output: CSV with named columns, aggregated, with no user ids or
+    other personal data;
+  - the file name to save it as, `YYYY-MM-DD_<title>_<scope>.csv`, in the
+    data folder named in *config: Live data*.
+- In HTML, each request is a `<div class="dr" data-dr="DR1"
+  data-status="open">` with the prompt in a `<pre>` and a Copy button. In
+  chat, each prompt is its own code block.
+
+**When the data arrives** (pasted, given as a path, or found under the
+expected file name at the start of a later run), update the same doc. Never
+write a second one:
+
+1. Check it before using it: the shape, the date range, nulls, the row
+   count, and whether the events fire when you think they do.
+2. Recompute everything that depended on it.
+3. Replace the placeholders and estimates with the observed values and their
+   source. Revise the findings, proposals and decisions that change. Don't
+   append the new data as a note.
+4. Set the request to `data-status="received"`, with the date, the file and
+   the row count. Bump the revision and the Updated date.
+5. Tell the user in a few lines what changed, and say plainly if a conclusion
+   flipped. If the data contradicts the doc, say so; don't reconcile it
+   silently.
+
+Every command that updates a doc first looks for its open `data-dr` requests
+and for files under their expected names.
+
 ## 6. HTML pages
 
 All the generated docs are single self-contained HTML files, which open

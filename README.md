@@ -66,6 +66,16 @@ balance workbook path, so the commands never hardcode one game. The repo's own
 `CLAUDE.md` and `AGENTS.md` always win. The template is
 [`skills/setup/references/config-template.md`](skills/setup/references/config-template.md).
 
+## Data requests
+
+When a report or GDD needs data the agent can't pull itself, it doesn't stop
+or guess. It finishes with what it has, marks each gap `DATA NEEDED: DR1`, and
+adds a **Data needed** section with one copy-ready prompt per request (the
+tool, metric, filters, dates, CSV columns and the file name to save it as).
+Paste the prompt into your analytics tool's assistant or send it to an
+analyst. When you send the data back, or save it under that file name, the
+next run checks it and updates the same doc, saying what changed.
+
 ## Balance workbook
 
 - **Sheets are proposed for you.** If a system has no sheet, or there's no
@@ -83,6 +93,9 @@ balance workbook path, so the commands never hardcode one game. The repo's own
 - **Changelog** records every change: who made it, why, and the old and new
   values.
 - **Sync** maps each value to its place in the code and tracks what's been synced.
+- **Report page:** each run writes or updates an HTML report at the config's
+  `Report` path, with findings, proposals, the remote-config payload and the
+  data prompts.
 - **Close the file before running** `/gd:balance`. Keep charts and images in a
   separate workbook, because the script refuses to write a file that has them.
 

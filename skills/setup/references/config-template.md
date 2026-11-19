@@ -66,5 +66,6 @@ date, {slug} = kebab-case feature name. -->
 
 ## Balance
 - Workbook: balance/{game}-balance.xlsx
+- Report: docs/balance/{system}-balance.html
 - Simulations and tests: <commands that measure balance, or none>
 - Live data: <analytics tool, and where its exports are or how to pull them (folder, BigQuery, bucket), or none>

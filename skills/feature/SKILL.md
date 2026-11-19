@@ -57,6 +57,8 @@ works.
   fit with.
 - If the feature already has a GDD, revise it: bump the revision in the
   header and move settled questions into Decisions. Don't create a second file.
+  If it has open data requests, look for their files and use what has arrived
+  (conventions §5b).
 - Use the reference game (config) as the first anchor for the design.
 
 ## 2. Design it
@@ -76,7 +78,9 @@ Work out each of these before writing:
   config's **Remote config default** says, usually off.
 - **Proof:** the metric that would move, its baseline with source, the target,
   and the kill criterion. If no metric would move, say the feature can't be
-  tested and price it as content.
+  tested and price it as content. If the baseline or any number the design
+  rests on isn't available, write a data request for it (conventions §5b)
+  instead of guessing.
 - **Open questions:** each with 3 or more real options and a recommendation.
 
 ## 3. Ask (default mode only)
@@ -117,11 +121,13 @@ These are the sections, in order. Drop any the feature doesn't have.
    events.
 10. **Risks:** churn, first-session cost and the non-payer, one line each,
     plus anything specific to this feature.
-11. **Open questions:** each as `Q1 …` with its options, the recommended one
+11. **Data needed:** one copy-ready prompt per request (conventions §5b).
+    Keep the `id="data-needed"`, `data-dr` and `data-status` attributes.
+12. **Open questions:** each as `Q1 …` with its options, the recommended one
     marked. Keep the `id="open-questions"` and `data-q` attributes, because
     `/gd:make` reads them.
-12. **Later:** what's out of scope, one line each.
-13. **Footer:** the related docs.
+13. **Later:** what's out of scope, one line each.
+14. **Footer:** the related docs.
 
 Mockups use the template's phone kit (`.phone`, `.ps`, `.pstatus`, `.pbody`,
 `.btn`, `.card`, `.veil`, `.popup`, `.bar`). Draw icons as inline SVG
@@ -140,7 +146,9 @@ for mockups: final art is made later, by `/gd:make` through `/gd:asset`.
 ## 6. Report
 
 Give the file path, the decisions made in this run, the questions still open,
-and the next step: `/gd:make <feature>`. If the feature adds tunable values,
+every open data prompt as its own code block, and the next step:
+`/gd:make <feature>`. When the user sends the data, update the GDD as
+conventions §5b describes. If the feature adds tunable values,
 such as prices, rewards, timers or curves, suggest `/gd:balance <feature>`
 first, to put them in the balance workbook and check them against
 competitors.

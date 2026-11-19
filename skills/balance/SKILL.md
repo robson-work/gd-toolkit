@@ -9,8 +9,10 @@ argument-hint: '<feature or system> [--report-only]'
 `<skill-dir>` is the folder that holds this SKILL.md, and `<plugin-root>` is two folders above it. Replace them with real paths in commands. (In Claude Code they are `${CLAUDE_SKILL_DIR}` and `${CLAUDE_PLUGIN_ROOT}`.)
 
 Input: a feature or system, such as `weapons`, `daily quest rewards` or
-`levels 1-50`. Output: balance sheets for it in the workbook, a findings
-report, and, after approval, game code that matches the workbook.
+`levels 1-50`. Output: balance sheets for it in the workbook, a report page
+at *config: Balance → Report* with copy-ready prompts for any data still
+needed, and, after approval, game code that matches the workbook. When that
+data arrives, the same report is updated.
 
 Read `<plugin-root>/shared/conventions.md` and the repo config first.
 Then read `<skill-dir>/references/workbook-format.md` (the workbook
@@ -47,10 +49,14 @@ Before judging any number, understand the system as the code runs it:
 - Note the systems it touches, such as currencies, other items or progression,
   and the values those already use.
 
-## 2. Load the workbook and the GD's edits
+## 2. Load the workbook, the GD's edits and the last report
 
 If the workbook at *config: Balance → Workbook* doesn't exist yet, go to
 step 3.
+
+- If this system already has a report, read it. For every open `data-dr`
+  request, look for its file under the expected name, and use what has
+  arrived (see step 10).
 
 - Run `diff`. If there are pending GD edits, show them to the user in a short
   table (sheet, id, field, old → new), then run `ack`. They are now GD-owned
@@ -102,15 +108,14 @@ For content that's live, the team's own numbers beat everything else.
 
 - Look first in *config: Live data* and the repo's data folders for exports
   that cover the current build and the last 14 days or more.
-- If they're missing or stale, request them. List each export exactly: the
-  tool, the report, the metric, the filters (build, platform, country if it
-  matters), the date range and the minimum sample. For example: "devtodev →
-  Progression → attempts to complete, levels 1–60, build ≥ 2.4, 2026-11-01 to
-  2026-11-14". Ask with the question tool. The options are: I'll provide the
-  exports now (Recommended); pull them yourself from the configured source
-  (only when the config gives you access, such as a BigQuery export or a
-  bucket); or continue on benchmarks only, with every target marked lower
-  confidence. Don't stop if they choose the last option.
+- If they're missing or stale, pull them yourself when the config gives you
+  access (such as a BigQuery export or a bucket). Otherwise, write a data
+  request for each one, as conventions §5b describes: a copy-ready prompt
+  naming the tool, the report, the metric, the filters, the absolute date
+  range, the minimum sample, the CSV columns and the file name to save it
+  as. Don't wait for the data: carry on with benchmarks, mark each gap
+  `DATA NEEDED: DRn`, and mark the targets that rest on benchmarks alone as
+  lower confidence.
 - Interrogate every number before using it: the sample size and window,
   whether the event fires when you think it does (retries, resume from
   background), mix shifts in traffic, the build filter, and incomplete data
@@ -205,7 +210,7 @@ Then:
   related values. Send `"approved": true` only for the exact values the user
   approved.
 - **`--report-only`:** stop after the table. Write nothing except the sheets
-  from step 2, the `Benchmarks` rows and `Targets.actual`.
+  from step 3, the `Benchmarks` rows, `Targets.actual` and the report page.
 
 Then run `apply` with a reason on every change. The reason should be
 specific, for example "smg dps_per_1k 31% over tier-2 curve and above the
@@ -226,15 +231,40 @@ Once the changes are applied to the workbook:
 
 ## 9. Report
 
-- The workbook path, the sheets created or extended this run, and the GD
-  edits acknowledged.
+Write the report page at *config: Balance → Report*, starting from
+`<skill-dir>/assets/balance-report-template.html` and following the HTML
+rules in the conventions. If the system already has a report, update it and
+bump its revision; don't create a second file. It holds:
+
+- In short: at most 4 bullets.
 - The evidence used: the data exports (source, range, rows), the games
-  researched, and any data requests still open.
-- Problems found, each with its evidence kind.
-- Changes applied, by AI or approved by GD, and any still pending approval.
-- What was synced to code, and what the user has to push to remote config.
-- Risks the evidence can't settle. Name the metric to watch after release,
-  with its baseline and source.
+  researched, and the simulations (seed, runs, which inputs are assumed).
+- Findings, each with its evidence kind, and proposals with their status
+  (applied, approved by GD, or pending approval).
+- What was synced to code, and the remote-config payload the user has to
+  push, with a Copy button.
+- **Data needed:** one copy-ready prompt per open request (conventions §5b).
+- What to watch after release: the metric, its baseline and its source.
+
+In chat, give the report path, the workbook path, the sheets created or
+extended, the GD edits acknowledged, the changes applied, and every open data
+prompt as its own code block, so it can be copied straight from the chat.
+End with one line: "Send me the files, paste the data or drop them under the
+names in the prompts, and I'll update the report."
+
+## 10. When the data arrives
+
+When the user provides data (in this session or a later run), follow
+conventions §5b, plus:
+
+- Write the observed values into the workbook through `apply`:
+  `Targets.actual` with an `Observed (…)` source, and any target that should
+  now come from our data instead of a benchmark.
+- Re-run the checks the data touches (step 6), and redo the proposals it
+  changes (step 7). A change already applied that the data contradicts gets a
+  new proposal, not a silent revert. GD-owned values still need approval.
+- Update the report in place: the evidence, findings and proposals, and the
+  request marked received.
 
 Don't commit unless asked. The workbook and its `Changelog` are the record of
 what changed; add `.history/` to `.gitignore` if it isn't there.
