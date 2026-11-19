@@ -56,6 +56,7 @@ prices, rewards, timers or curves.
 | `/gd:make --auto` | Settles open questions with the decision rules: reference game → systems principles → top competitors. |
 | `/gd:review --no-fix` | Reports findings only. |
 | `/gd:balance --report-only` | Proposes changes without applying them. |
+| `/gd:balance --no-data` | For when there's no player data (a game before launch, a new system, no analytics access): balances on competitor benchmarks and simulations with a sensitivity check, and writes a data plan (what to measure, thresholds for the first data, prompts to run later). On automatically when the config's `Live data` is `none`. |
 | `/gd:setup --refresh` | Re-checks an existing config against the repo. |
 
 ## Per-repo config

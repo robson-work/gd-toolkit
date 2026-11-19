@@ -88,6 +88,11 @@ guess silently.
 
 - **Pull it yourself** when the config gives you access (an export folder,
   BigQuery, a bucket). Then no request is needed.
+- **No player data** (a game before launch, a system with no history, or
+  *config: Live data* is `none`): don't request analytics that don't exist.
+  Use benchmarks and mark the number `no player data`. Write down what to
+  measure once data exists, and the prompt to get it, marked
+  `data-status="future"`.
 - **Otherwise, request it in the doc.** Finish the doc with what you have,
   labelled Estimated or Benchmark, mark each gap `DATA NEEDED: DR1`, and add
   a **Data needed** section with one block per request, `DR1…DRn`.

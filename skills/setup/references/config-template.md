@@ -68,4 +68,4 @@ date, {slug} = kebab-case feature name. -->
 - Workbook: balance/{game}-balance.xlsx
 - Report: docs/balance/{system}-balance.html
 - Simulations and tests: <commands that measure balance, or none>
-- Live data: <analytics tool, and where its exports are or how to pull them (folder, BigQuery, bucket), or none>
+- Live data: <analytics tool, and where its exports are or how to pull them (folder, BigQuery, bucket), or none (no player data yet: /gd:balance runs as --no-data)>

@@ -1,7 +1,7 @@
 ---
 name: balance
-description: 'Review and redo the balance of one game feature or system, using an Excel workbook as the persistent, shared source of truth between the AI and the game designer. Proposes and creates the balance sheets when they are missing, analyzes the game''s mechanics, requests the team''s live data, researches competitor and reference-game numbers as benchmarks, respects and logs manual designer edits, detects overpowered, underpowered, scaling, synergy and exploit problems, validates with data, benchmarks and simulation, tracks every change, and syncs approved values into the code. No GDD needed. Use when the user runs /gd:balance or /balance, or asks to balance, tune or rebalance values, stats, rewards, prices, difficulty or an economy.'
-argument-hint: '<feature or system> [--report-only]'
+description: 'Review and redo the balance of one game feature or system, using an Excel workbook as the persistent, shared source of truth between the AI and the game designer. Proposes and creates the balance sheets when they are missing, analyzes the game''s mechanics, requests the team''s live data, researches competitor and reference-game numbers as benchmarks, respects and logs manual designer edits, detects overpowered, underpowered, scaling, synergy and exploit problems, validates with data, benchmarks and simulation (--no-data when there is no player data, such as before launch), tracks every change, and syncs approved values into the code. No GDD needed. Use when the user runs /gd:balance or /balance, or asks to balance, tune or rebalance values, stats, rewards, prices, difficulty or an economy.'
+argument-hint: '<feature or system> [--report-only] [--no-data]'
 ---
 
 # Balance
@@ -18,6 +18,22 @@ Read `<plugin-root>/shared/conventions.md` and the repo config first.
 Then read `<skill-dir>/references/workbook-format.md` (the workbook
 contract) and `<skill-dir>/references/balance-checks.md` (what to
 check).
+
+## Modes
+
+- **Default:** uses the team's live data where it exists, and requests what's
+  missing.
+- **`--report-only`:** proposes changes without applying them (step 7).
+- **`--no-data`:** for when there's no player data to use: a game that
+  hasn't launched, a new system with no history, or no access to analytics.
+  It's on automatically when *config: Live data* is `none`; say so in the
+  report. In this mode:
+  - never request analytics that don't exist (step 4a is replaced);
+  - lean harder on benchmarks and simulation (steps 4b and 7);
+  - mark every target `no player data`, because no player has tested it;
+  - write a data plan instead of data requests (step 9): what to measure,
+    the thresholds for the first real data, and the prompts to run once data
+    exists.
 
 ## Core principle
 
@@ -106,6 +122,11 @@ Do this on every run, before setting targets. Don't wait to be asked.
 
 For content that's live, the team's own numbers beat everything else.
 
+**`--no-data`:** skip the analytics requests. Use only data the team
+already has from playtests or test builds, if the repo or the user has any,
+and label it `Observed (playtest <date>, n=<players>)`, because a few testers
+are not the market. Then go to 4b.
+
 - Look first in *config: Live data* and the repo's data folders for exports
   that cover the current build and the last 14 days or more.
 - If they're missing or stale, pull them yourself when the config gives you
@@ -129,6 +150,9 @@ Research automatically. Don't ask first.
 - **Which games:** the reference game from the config, plus 2–4 games that
   rank high in the same genre now, starting with the "also considered" list
   from the config's reference-game line. Use WebSearch where it's available.
+  With `--no-data`, use 4–6 games, because benchmarks are the main outside
+  evidence, and look for published numbers for the genre too (retention by
+  day, session length, early-level funnels, soft-launch results).
 - **What to find:** the same values this system tunes. For example: prices
   and pack sizes, reward amounts and cadence, timers and caps, cost and
   income curves, energy or lives, ad reward caps, and difficulty pacing.
@@ -160,6 +184,10 @@ no target, propose one, in this order:
 3. the reference game's benchmark;
 4. the competitor benchmark range, using its median and spread;
 5. the genre anchors in the repo's CLAUDE.md.
+
+With `--no-data`, step 2 doesn't exist, so targets come from the GD, the
+reference game, the competitor range and the genre anchors, and each one's
+`notes` says `no player data`.
 
 Add the targets with `apply`, and give each one a `source` that names where
 it came from, such as `Benchmark (3 games: A, B, C; 2026-11-18)`. Targets set
@@ -193,6 +221,18 @@ there isn't one:
    inputs, such as the real attempts-per-level distribution. Label any input
    you assumed, and report the seed and number of runs.
 4. **Estimated:** closed-form maths from the workbook values.
+
+**`--no-data`:** simulation carries more of the weight, so make it honest:
+
+- Build the player models (the non-payer, the 10x failer, the hoarder, and
+  a typical player) from benchmark inputs: sessions per day, session length,
+  attempts per level, ad opt-in. Name the source of each input.
+- Run a sensitivity check: vary each assumed input across its benchmark
+  range, and report which conclusions hold across the whole range and which
+  flip. Propose only the changes that hold. List the ones that flip as
+  "decide when data exists".
+- Prefer values that are easy to change later, such as remote config,
+  over values baked into the build.
 
 Always label each result Observed, Benchmark, Measured or Estimated. Never
 present an estimate as a test result, and never present a simulation run on
@@ -245,12 +285,26 @@ bump its revision; don't create a second file. It holds:
   push, with a Copy button.
 - **Data needed:** one copy-ready prompt per open request (conventions §5b).
 - What to watch after release: the metric, its baseline and its source.
+- **With `--no-data`, a data plan in place of open data requests:**
+  - **Measure:** each target and the analytics event that measures it. Flag
+    any event the game doesn't fire yet, because a target with no event
+    can't be checked later.
+  - **First-data thresholds:** for each key metric, the value that means
+    "keep", "tune" or "stop" once real data arrives, taken from the
+    benchmarks.
+  - **Future prompts:** the copy-ready data prompts to run once there is
+    data, each with `data-status="future"`. Their date ranges say "the first
+    14 days with data, from the release or soft launch", since the dates
+    aren't known yet.
 
 In chat, give the report path, the workbook path, the sheets created or
 extended, the GD edits acknowledged, the changes applied, and every open data
 prompt as its own code block, so it can be copied straight from the chat.
 End with one line: "Send me the files, paste the data or drop them under the
-names in the prompts, and I'll update the report."
+names in the prompts, and I'll update the report." With `--no-data`, list
+the events still missing instead of the prompts, and end with: "Once there's
+player data, run `/gd:balance <system>` without `--no-data`, and the future
+prompts become data requests."
 
 ## 10. When the data arrives
 
@@ -265,6 +319,11 @@ conventions §5b, plus:
   new proposal, not a silent revert. GD-owned values still need approval.
 - Update the report in place: the evidence, findings and proposals, and the
   request marked received.
+- **When player data first exists:** the first run without `--no-data` (or
+  after *config: Live data* stops being `none`) turns the `future` prompts
+  into open requests with real dates, compares the first numbers with the
+  thresholds, and replaces the `no player data` targets that our data now
+  covers.
 
 Don't commit unless asked. The workbook and its `Changelog` are the record of
 what changed; add `.history/` to `.gitignore` if it isn't there.

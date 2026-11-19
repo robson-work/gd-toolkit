@@ -103,4 +103,9 @@ Prefer the strongest evidence available, and always label which one you used:
 A simulation tells you what a value will do, not what it should be. Don't
 set a target from a simulation alone.
 
+Without player data there's no Observed evidence, except playtest data,
+which comes from a few testers and not the market. Benchmarks become the main
+evidence, and simulations need a sensitivity check across the benchmark range
+(see SKILL.md, `--no-data`).
+
 If two levels disagree, say so and say which one you trust and why.

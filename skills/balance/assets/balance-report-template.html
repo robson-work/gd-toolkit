@@ -67,7 +67,7 @@
     <li><b>Revision</b> {{1}}</li>
     <li><b>Updated</b> {{YYYY-MM-DD}}</li>
     <li><b>Workbook</b> <code>{{balance/game-balance.xlsx}}</code></li>
-    <li><b>Data needed</b> {{2 open}}</li>
+    <li><b>Data</b> {{2 requests open | no player data}}</li>
   </ul>
 
   <h2><span class="n">1</span>In short</h2>
@@ -120,6 +120,14 @@ Only levels with 200 or more players are usable; keep the rest but flag them.
 Aggregated numbers only, no user ids.
 Save as 2026-11-19_attempts_levels-1-60.csv.}}</pre><button class="copy" type="button">Copy</button></div>
   </div>
+  <!-- No player data (--no-data): replace the open requests with a data plan —
+  <h3>Measure</h3> a table of Target · Event · Fires today? (flag the missing ones)
+  <h3>First-data thresholds</h3> a table of Metric · Keep · Tune · Stop (benchmark source)
+  then one future prompt per metric:
+  <div class="dr" data-dr="DR1" data-status="future">
+    <b>DR1 · … <span class="tag new">When data exists</span></b>
+    <div class="snippet"><pre>… Range: the first 14 days with data, from the release or soft launch …</pre><button class="copy" type="button">Copy</button></div>
+  </div> -->
   <!-- Received requests stay, marked like this:
   <div class="dr" data-dr="DR1" data-status="received">
     <b>DR1 · … <span class="tag ok">Received YYYY-MM-DD</span></b>
