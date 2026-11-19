@@ -12,6 +12,9 @@ has from playtests or test builds, if the repo or the user has any, and
 label it `Observed (playtest <date>, n=<players>)`, because a few testers
 are not the market. Then go to 4b.
 
+Playing the build yourself (step 4c) matters most in this mode: it's the
+only way to check the values and the timing as the game really runs them.
+
 ## Step 4b: more benchmarks
 
 Benchmarks are the main outside evidence, so research 4–6 games instead of

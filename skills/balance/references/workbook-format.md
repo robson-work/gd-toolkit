@@ -64,6 +64,7 @@ resolved `=C2/D2`-style references.)
   Add `, assumed inputs` if any of its inputs were not observed or benchmarked,
   `, fitted <parameter>` if one was fitted, and `, not calibrated` if the
   simulation hasn't passed the calibration gate in `balance-checks.md`.
+  An agent playtest is `Measured (agent playtest <date>, build <version>, <device>)`.
 - `Estimated (model)`: calculated in the workbook or by Python from its values.
 
 ### Example: `Benchmarks`

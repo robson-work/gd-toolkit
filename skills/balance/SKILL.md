@@ -1,6 +1,6 @@
 ---
 name: balance
-description: 'Review and redo the balance of one game feature or system, using an Excel workbook as the persistent, shared source of truth between the AI and the game designer. Proposes and creates the balance sheets when they are missing, analyzes the game''s mechanics, requests the team''s live data, researches competitor and reference-game numbers as benchmarks, respects and logs manual designer edits, detects overpowered, underpowered, scaling, synergy and exploit problems, validates with data, benchmarks and simulation (--no-data when there is no player data, such as before launch), tracks every change, and syncs approved values into the code. No GDD needed. Use when the user runs /gd:balance or /balance, or asks to balance, tune or rebalance values, stats, rewards, prices, difficulty or an economy.'
+description: 'Review and redo the balance of one game feature or system, using an Excel workbook as the persistent, shared source of truth between the AI and the game designer. Proposes and creates the balance sheets when they are missing, analyzes the game''s mechanics, requests the team''s live data, researches competitor and reference-game numbers as benchmarks, plays the build itself on an attached phone or a web build (requesting debug controls when needed), respects and logs manual designer edits, detects overpowered, underpowered, scaling, synergy and exploit problems, validates with data, benchmarks and simulation (--no-data when there is no player data, such as before launch), tracks every change, and syncs approved values into the code. No GDD needed. Use when the user runs /gd:balance or /balance, or asks to balance, tune or rebalance values, stats, rewards, prices, difficulty or an economy.'
 argument-hint: '<feature or system> [--report-only] [--no-data]'
 ---
 
@@ -154,6 +154,14 @@ everything else.
 **4b. Competitors (Benchmark).** Research automatically, following
 `benchmarks.md`, and write every number into the `Benchmarks` sheet.
 
+**4c. Play the build (Measured).** When a playable build exists, ask to
+play it on an attached phone or a web build, then play it, following
+`playtest.md`. It checks the values the build really uses, the real time
+between rewards and upgrades, and the edge cases and exploits. Missing
+debug controls (set currency, jump to a level or day, skip time, read the
+economy state) are requested with options, and added debug-only on a yes.
+A playtest is one tester, not a player: never use it for player behaviour.
+
 ## 5. Set targets
 
 Every balance judgment needs a target. Read `Targets`. For each check that has
@@ -232,7 +240,8 @@ dps_per_1k 31% over tier-2 curve and above the 3-game benchmark; cost
   that are live go to the user as a JSON payload to paste, because you don't
   change remote config yourself.
 - Run the config's typecheck and the feature's tests, then `mark-synced` the
-  rows you changed.
+  rows you changed. If you played the build in step 4c, replay the changed
+  values to confirm the build uses them.
 - If the code can't follow the workbook, for example because it computes the
   value, update the `code_ref` and tell the user.
 

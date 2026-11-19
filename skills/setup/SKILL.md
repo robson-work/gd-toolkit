@@ -31,7 +31,8 @@ each field from the repo, not from guesses:
 - **Checks:** typecheck, lint and test scripts in package.json or the build
   files, and any verification rules in CLAUDE.md or AGENTS.md (reviews,
   change gates).
-- **Build and device:** the QA build, verify and install commands, device
+- **Build and device:** the QA build, verify and install commands, a
+  playable web build (a static web export, not a dev server), the device
   docs, the debug channel port and protocol, and known device quirks. Look for
   existing skills in `.claude/skills/` too, because they often hold exactly
   this, such as a QA or capture skill.

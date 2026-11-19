@@ -43,8 +43,9 @@ date, {slug} = kebab-case feature name. -->
 - Feature tests: <how a feature's tests are named and run>
 - Verification rules: <repo rules to follow before calling work done, e.g. "CLAUDE.md reciprocal Codex review; AGENTS.md change gates">
 
-## Build and device (QA captures)
+## Build and device (QA captures, balance playtests)
 - Capture platform: <android-adb | ios-device | web | none>
+- Web build: <command that serves a playable web build, and its URL; or none>
 - Device rules docs: <docs to read before touching a device, or none>
 - Build command: <the full standalone QA build command>
 - Build verify command: <or none>

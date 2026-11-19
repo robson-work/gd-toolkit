@@ -93,6 +93,11 @@ next run checks it and updates the same doc, saying what changed.
 - **Calibrated simulations.** A simulation counts as Measured only once it
   reproduces live progress and income for light, mid and heavy players;
   until then, results are relative only and labelled `not calibrated`.
+- **Plays the build.** When there's a build, it asks to play it on your
+  attached phone or a web build, and checks the values, the real time
+  between rewards and the exploits as the game runs them. If it needs debug
+  controls (set currency, jump to a level or day, skip time), it asks to add
+  them, debug-only.
 - **Every lever is traced** to the metric it moves and checked for ways
   players can route around it, then ranked by likely revenue impact.
 - **Edit freely in Excel.** Blue cells are inputs and black cells are formulas.
