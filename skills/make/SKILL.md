@@ -82,7 +82,8 @@ Work step by step, in order:
 - Implement the step, then run its check plus the config's typecheck, lint
   and feature tests. Fix a failure before moving on.
 - Follow the config's **Remote config default**: the feature ships as the GDD
-  says, usually off.
+  says, usually off. The parser reads plain values only, with no A/B test
+  fields (conventions §5c).
 - Put all player-facing copy in the config's **UI copy source**, with the
   wording from the mockups.
 - **New art** (icons, items, backgrounds): make the final images with

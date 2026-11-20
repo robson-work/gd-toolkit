@@ -132,6 +132,22 @@ write a second one:
 Every command that updates a doc first looks for its open `data-dr` requests
 and for files under their expected names.
 
+## 5c. Remote-config JSON
+
+Every remote-config JSON in a doc, a payload or the code holds only the
+feature's own values: switches, amounts, timers, curves.
+
+- **Never add A/B test fields**, such as `variant`, `group`, `arm`,
+  `experiment`, `test_id`, `cohort`, a rollout percentage or audience
+  targeting. Tests, groups, splits and audiences are set up in the tool
+  named in *config: A/B testing*, such as devtodev, never in the JSON.
+- **For a test,** give one complete, plain payload per group, each with
+  its own Copy button. Name the group outside the JSON ("Control", "Group
+  B: hint price 120"), and say to set up the test in that tool and paste
+  each payload into its group.
+- **The code reads plain values.** It never branches on a variant or group
+  name sent in the config.
+
 ## 6. HTML pages
 
 All the generated docs are single self-contained HTML files, which open

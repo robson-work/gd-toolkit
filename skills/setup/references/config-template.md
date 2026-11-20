@@ -31,6 +31,7 @@ date, {slug} = kebab-case feature name. -->
 - UI copy source: <e.g. src/i18n/locales/en.json>
 - Remote config: <provider; value format; how a key is declared; where defaults and parsers live>
 - Remote config default: <e.g. features ship off>
+- A/B testing: <tool where tests, groups and audiences are set up, e.g. devtodev; remote-config JSON never carries test fields>
 - Ads: <API names for rewarded and interstitial calls; how placements are named>
 - Notifications: <where they're scheduled; where their copy lives>
 - Analytics: <events doc, e.g. src/analytics/README.md>

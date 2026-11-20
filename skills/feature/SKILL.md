@@ -116,7 +116,8 @@ These are the sections, in order. Drop any the feature doesn't have.
 7. **Economy:** a table with the columns Item, Faucet or sink, Amount and Cap,
    plus the edge-case lines for the non-payer, the 10x failer and the hoarder.
 8. **Remote config:** the key, a one-line JSON default with a Copy button, and
-   a table with the columns Field, Effect and Default.
+   a table with the columns Field, Effect and Default. No A/B test fields
+   (conventions §5c).
 9. **Ads, notifications, analytics:** a short table each, and only the main
    events.
 10. **Risks:** churn, first-session cost and the non-payer, one line each,

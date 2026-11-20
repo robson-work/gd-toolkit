@@ -75,14 +75,15 @@ code, or `unconfirmed`), Platforms, Population (all players, a test arm or
 a segment). Look in the code, the remote config and the exports for these,
 and ask only about what you can't find:
 
-- remote-config overrides, including a whole variant replacing a curve;
+- remote-config overrides, including a whole curve replaced, not only one
+  changed parameter;
 - values that differ by platform, or systems live on one platform only;
 - flags for one segment only, such as incentivised users, testers or an
   A/B arm;
 - game-speed or clock multipliers.
 
 Where the shape of the live data can confirm a value, back-solve it, for
-example progress needed per level against each formula variant. Mark what
+example progress needed per level against each candidate formula. Mark what
 you can't confirm and say which conclusions depend on it.
 
 ## 2. Load the workbook, the GD's edits and the last report
@@ -238,7 +239,9 @@ dps_per_1k 31% over tier-2 curve and above the 3-game benchmark; cost
 - Run `sync-status`. For each `pending` row, change the value at its
   `code_ref` in the code or the remote-config default. Remote-config values
   that are live go to the user as a JSON payload to paste, because you don't
-  change remote config yourself.
+  change remote config yourself. The payload holds plain values only, with no
+  A/B test fields. A proposal to test gets one payload per group, to set up
+  in *config: A/B testing* (conventions §5c).
 - Run the config's typecheck and the feature's tests, then `mark-synced` the
   rows you changed. If you played the build in step 4c, replay the changed
   values to confirm the build uses them.

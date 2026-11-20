@@ -15,7 +15,8 @@ The template's sections, in order. Delete the ones that are empty.
 - **Recommendations:** the cards (below), in tier order.
 - **Enablers:** telemetry, gating code, test-evaluation rules.
 - **Sync:** what was synced to code, and the remote-config payload the user
-  has to push, with a Copy button.
+  has to push, with a Copy button. Plain values only; a test gets one
+  payload per group, named outside the JSON (conventions §5c).
 - **Data needed:** one copy-ready prompt per open request (conventions §5b).
   With `--no-data`, the data plan from `no-data.md` instead.
 - **Watch after release:** the metric, its baseline and its source.

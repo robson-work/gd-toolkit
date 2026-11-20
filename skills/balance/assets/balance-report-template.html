@@ -98,7 +98,7 @@
   <div class="table-scroll"><table>
     <thead><tr><th>Value</th><th>Code default</th><th>Live</th><th>Source</th><th>Platforms</th><th>Population</th></tr></thead>
     <tbody>
-      <tr><td><code>{{xp_curve}}</code></td><td>{{variant A}}</td><td>{{variant C (whole curve)}}</td><td>{{remote config export YYYY-MM-DD}}</td><td>{{both}}</td><td>{{all players}}</td></tr>
+      <tr><td><code>{{xp_curve}}</code></td><td>{{×1.15 per level}}</td><td>{{×1.12 per level (whole curve replaced)}}</td><td>{{remote config export YYYY-MM-DD}}</td><td>{{both}}</td><td>{{all players}}</td></tr>
       <tr><td><code>{{energy_cost}}</code></td><td>{{5}}</td><td>{{5}}</td><td><span class="gap">{{unconfirmed}}</span></td><td>{{Android only}}</td><td>{{all players}}</td></tr>
     </tbody>
   </table></div>
@@ -149,6 +149,10 @@
     <li>{{Synced to code: N values (see the Sync sheet)}}</li>
   </ul>
   <div class="snippet"><pre>{{"remote_config_key": {"field": 1}}}</pre><button class="copy" type="button">Copy</button></div>
+  <!-- Plain values only, never A/B test fields (variant, group, arm…). For a test, one payload per group:
+  <p><b>Control</b> (today's values)</p> <div class="snippet"><pre>…</pre><button class="copy" type="button">Copy</button></div>
+  <p><b>Group B: {{hint price 120}}</b></p> <div class="snippet"><pre>…</pre><button class="copy" type="button">Copy</button></div>
+  <p class="muted">Set up the test and its groups in {{devtodev}}, then paste each payload into its group.</p> -->
 
   <h2 id="data-needed"><span class="n">7</span>Data needed</h2>
   <div class="dr" data-dr="DR1" data-status="open">

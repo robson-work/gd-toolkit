@@ -97,6 +97,9 @@ remote-config tool, in these blocks, each with a Copy button:
 3. **Further payloads only when QA needs them:** for example ads off, a later
    phase, or a server switch on.
 
+No block carries A/B test fields (conventions §5c). If the feature is in a
+test, give one plain payload per group.
+
 Under the blocks, add a table with the columns Field, Effect, Default and Ad
 placement. Build each JSON with `JSON.stringify` on an object, or check it with
 `node -e 'JSON.parse(...)'`, so it's always valid. Never invent a field the

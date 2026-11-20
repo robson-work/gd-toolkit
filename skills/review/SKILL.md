@@ -43,7 +43,8 @@ Check these areas:
    finding, and so is a behavior in the code the GDD doesn't mention.
 3. **Remote config:** a missing or malformed value falls back to the
    bundled default. The feature ships as the config's default says. A switch
-   turned off mid-session is safe.
+   turned off mid-session is safe. No A/B test fields in the config or the
+   parser, and no branching on a variant name (conventions §5c).
 4. **Economy:** no grant that can repeat (double claims, claims on retry,
    rewards granted before the ad has finished), no faucet without its sink, and
    caps enforced. Run the non-payer, the 10x failer and the hoarder through the
