@@ -98,6 +98,11 @@ next run checks it and updates the same doc, saying what changed.
   between rewards and the exploits as the game runs them. If it needs debug
   controls (set currency, jump to a level or day, skip time), it asks to add
   them, debug-only.
+- **Setup in one go.** The first run asks which branch is live (never
+  assuming `main`), what player feedback exists, which data tools you have
+  and how the report should read, and saves the answers in the config.
+- **Reviewed before you see it.** Every report gets a consistency pass and
+  an independent fact-check of its numbers, cohorts and claims.
 - **Every lever is traced** to the metric it moves and checked for ways
   players can route around it, then ranked by likely revenue impact.
 - **Edit freely in Excel.** Blue cells are inputs and black cells are formulas.

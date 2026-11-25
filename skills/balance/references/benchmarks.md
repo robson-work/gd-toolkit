@@ -19,6 +19,13 @@ Research automatically on every run. Don't ask first.
 - **Normalize the units** before comparing: per minute of play, per
   session, per day, or a USD price tier. Note the context of each number,
   such as the level, the day or the tier.
+- **Same unit and clock:** compare games only in the same unit and clock
+  (real time or play time, offline included or not), or put the caveat on
+  the chart.
+- **Claims about competitors:** attribute a cause only as the source
+  measured it. Make no retention or engagement claims without data, and
+  write design as intent ("built to…"). Copy figures exactly from analyses
+  the user supplies; don't round or re-estimate them.
 - Write each number into the `Benchmarks` sheet with `apply` (reason:
   `research`), with its game, source URL, the date you accessed it and a
   confidence level (high, medium or low).

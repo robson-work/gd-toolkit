@@ -70,4 +70,8 @@ date, {slug} = kebab-case feature name. -->
 - Workbook: balance/{game}-balance.xlsx
 - Report: docs/balance/{system}-balance.html
 - Simulations and tests: <commands that measure balance, or none>
+- Live branch: <branch or tag players run now (confirmed YYYY-MM-DD); release branches follow <pattern>>
+- Data tools: <tools the team can export from: analytics, MMP, ad networks, market intelligence>
+- Player feedback: <path or link to review or player-feedback analyses, or none>
+- Report style: <charts first, little text | more written detail>
 - Live data: <analytics tool, and where its exports are or how to pull them (folder, BigQuery, bucket), or none (no player data yet: /gd:balance runs as --no-data)>

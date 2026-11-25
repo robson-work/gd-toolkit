@@ -57,7 +57,29 @@ writing the file another way.
 
 ## 1. Analyze the game
 
-Before judging any number, understand the system as the code runs it:
+**First, settle the setup in one go.** Ask these together with the question
+tool, then write the answers into *config: Balance* so they aren't asked
+again. Skip any the config already answers.
+
+- **Which branch is live:** list the release branches and recent tags, and
+  ask which one players run now. Never assume `main`. Re-ask when a newer
+  release branch appears than the one the config names. Analyse that
+  branch, and treat newer branches with unreleased work as releases in
+  progress for the roadmap (`report-rules.md`).
+- **Player feedback:** any existing review or player-feedback analysis to
+  use.
+- **Data tools:** which tools the team can export from: analytics, the MMP,
+  ad networks, market intelligence. Never write a request for a tool the
+  team doesn't have.
+- **Report style:** charts first with very little text (Recommended), or
+  more written detail.
+
+Don't ask for the reference game (conventions §1): state it in the same
+message, with the "also considered" games, so the user can correct it
+before the analysis starts.
+
+Then, before judging any number, understand the system as the code runs it
+on the live branch:
 
 - Find every tunable value of the feature in the code, remote config and data
   files: stats, costs, rewards, timers, caps, weights, curves and formulas.
@@ -137,12 +159,14 @@ Do this on every run, before setting targets. Don't wait to be asked.
 everything else.
 
 - Look first in *config: Live data* and the repo's data folders for exports
-  that cover the current build and the last 14 days or more. If they're
+  that cover the current build and at least a month of installs, read at
+  D14 and D30. Never use a two-week window. If they're
   missing or stale, pull them yourself when the config gives you access.
 - Otherwise, write the request following `data-request-template.md`
   (conventions §5b). Ask for everything the analysis and a calibrated
-  simulation will need in one prompt per tool, because four rounds of data
-  mean four rounds of rework. Check in the code that each event is actually
+  simulation will need in one prompt per tool, including the template's
+  standard economy list, because four rounds of data mean four rounds of
+  rework. Check in the code that each event is actually
   sent before asking for it (allowlists, sampling, tier filters).
 - Don't wait for the data: carry on with benchmarks, mark each gap
   `DATA NEEDED: DRn`, and mark the targets that rest on benchmarks alone as
@@ -211,6 +235,19 @@ would settle it.
 - **Lever map:** every proposal gets its line from `balance-checks.md` §8:
   lever → mechanism → metric it moves → why players can't route around it.
   A lever that can't fill in the last part is not a proposal yet.
+- **Remote config or code:** say for each lever whether it's a remote-config
+  value or a code constant, and so whether testing it needs a build first.
+- **Check it against the main finding:** if a proposal makes the core
+  problem worse for any segment, make it conditional on that segment or
+  drop it.
+- **Tests, not tweaks:** every test needs a hypothesis that could move a
+  primary metric materially. When the real issue is a bug, propose the fix,
+  not a test of values around it. An exploratory lever gets widely spaced
+  groups, including an extreme one (10× or more), and the simulation shows
+  where the effect levels off; put that curve in the card.
+- **The user's ideas become cards.** When the user suggests a test, add it
+  as a card with its evidence and risks. Don't argue it down in chat: the
+  GD decides.
 - **Rank by revenue impact:** order the proposals by their likely effect on
   revenue per install at D14 and D30, in tiers High, Medium and Low, plus
   Enabler (telemetry, gating code, test rules). Give each a one-line reason,
@@ -218,8 +255,8 @@ would settle it.
   changes one lever's strength, re-rank the whole list.
 
 Present them in chat as a table in tier order: Tier, Sheet/id/field,
-Current, Proposed, Benchmark range, Lever → metric, Evidence (and its kind)
-and Owner (AI or GD). Then:
+Current, Proposed, Benchmark range, Lever → metric, RC or code, Evidence
+(and its kind) and Owner (AI or GD). Then:
 
 - **AI-owned values:** apply them once the user has approved the batch.
   Where the trade-off is real, ask with the question tool and give 3 or more
@@ -254,15 +291,21 @@ Write the page at *config: Balance → Report* from
 `<skill-dir>/assets/balance-report-template.html`, following
 `report-rules.md` (sections, cards, language, charts) and the HTML rules in
 the conventions. If the system already has a report, update it and bump its
-revision; don't create a second file. Before every write, run the
-consistency pass in `report-rules.md`, then open the page at desktop width
-and at 360 px.
+revision; don't create a second file. Before every revision, copy the
+current page to `.history/` beside it, so a rejected change can be undone
+in one step. Before every write, run the consistency pass and the
+fact-check in `report-rules.md`, then check the page at desktop width and
+at 360 px.
 
 In chat, give the report path, the workbook path, the sheets created or
 extended, the GD edits acknowledged, the changes applied, and every open data
 prompt as its own code block, so it can be copied straight from the chat.
 End with one line: "Send me the files, paste the data or drop them under the
 names in the prompts, and I'll update the report."
+
+**Questions about the report's subject:** when the user asks an analytical
+question about it, answer it and add the answer to the report in the same
+turn, then say what you added. Don't ask whether to add it.
 
 ## 10. When the data arrives
 

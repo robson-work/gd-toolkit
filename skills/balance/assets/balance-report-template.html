@@ -110,6 +110,7 @@
     <tbody>
       <tr><td>Observed</td><td>{{devtodev, pulled YYYY-MM-DD}}</td><td>{{YYYY-MM-DD..YYYY-MM-DD, build ≥ x}}</td><td>{{12,400 users}}</td></tr>
       <tr><td>Benchmark</td><td>{{Game A, Game B, Game C (Benchmarks sheet)}}</td><td>{{accessed YYYY-MM-DD}}</td><td>{{14 numbers}}</td></tr>
+      <tr><td>Measured</td><td>{{Agent playtest, Pixel 8}}</td><td>{{build 2.4.1, YYYY-MM-DD}}</td><td>{{25 min; timers, costs, ad caps}}</td></tr>
       <tr><td>Measured</td><td>{{30-day economy sim, balance/sim/economy_sim.py}}</td><td>{{seed 7, 10,000 runs}}</td><td>{{calibrated ±25% on level and income; fitted: share of units in use}}</td></tr>
     </tbody>
   </table></div>
@@ -144,7 +145,14 @@
     <li>{{Send the unit_in_use event (not on the analytics allowlist) · blocks option B · Waiting on release}}</li>
   </ul>
 
-  <h2><span class="n">6</span>Sync</h2>
+  <h2><span class="n">6</span>Roadmap</h2>
+  <!-- In order: releases in progress → measurement and telemetry → bug fixes → remote-config test waves → build changes and features → later content -->
+  <ol>
+    <li><b>{{Release 2.5 (branch release/2.5, in progress)}}</b> · {{what it changes for this system}}</li>
+    <li><b>{{Telemetry}}</b> · <a href="#rec-{{slug}}">{{card}}</a></li>
+  </ol>
+
+  <h2><span class="n">7</span>Sync</h2>
   <ul>
     <li>{{Synced to code: N values (see the Sync sheet)}}</li>
   </ul>
@@ -154,7 +162,7 @@
   <p><b>Group B: {{hint price 120}}</b></p> <div class="snippet"><pre>…</pre><button class="copy" type="button">Copy</button></div>
   <p class="muted">Set up the test and its groups in {{devtodev}}, then paste each payload into its group.</p> -->
 
-  <h2 id="data-needed"><span class="n">7</span>Data needed</h2>
+  <h2 id="data-needed"><span class="n">8</span>Data needed</h2>
   <div class="dr" data-dr="DR1" data-status="open">
     <b>DR1 · {{Attempts to complete, levels 1–60}} <span class="tag open">Open</span></b>
     <div class="muted">{{Settles card #rec-level-12. Save as data/devtodev/YYYY-MM-DD_attempts_levels-1-60.csv}}</div>
@@ -180,12 +188,12 @@ Save as 2026-11-19_attempts_levels-1-60.csv.}}</pre><button class="copy" type="b
     <div class="muted">File data/devtodev/… · 58 rows · used in §3 and §4</div>
   </div> -->
 
-  <h2><span class="n">8</span>Watch after release</h2>
+  <h2><span class="n">9</span>Watch after release</h2>
   <ul>
     <li>{{Metric · baseline (source) · what would mean the change failed}}</li>
   </ul>
 
-  <h2><span class="n">9</span>Workbook sheets</h2>
+  <h2><span class="n">10</span>Workbook sheets</h2>
   <ul>
     <li><a href="{{../../balance/game-balance.xlsx}}">{{Boosters}}</a> · {{what this report uses from it}}</li>
   </ul>

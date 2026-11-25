@@ -57,6 +57,9 @@ measured or observed.
 - **Headroom:** for each segment, at fixed times since install, divide the
   balance on hand by lifetime spend. Well above 1 means a cost increase
   smaller than that multiple won't bind for that segment.
+- **Telemetry coverage:** compare the income the tracking records with the
+  income players must have earned to reach their state. The gap shows which
+  sources aren't tracked; request them as Enablers.
 - **Unused capacity:** the share of owned units (buildings, slots,
   vehicles) that are actually earning. A gap between bought and in use
   inflates any simulation that assumes all of them earn.
@@ -129,9 +132,21 @@ cohorts. Most "anomalies" come from mismatched definitions.
   cohort, window and exclusions. If that's impossible, footnote the mix.
 - **Windows:** check the day boundaries, the timezone and whether day 0
   counts. An off-by-one window creates false anomalies.
+- **Install cohort or all users:** an install cohort's totals never match
+  a tool's all-users totals. Before claiming two sources disagree, compare
+  the same population, build, calendar window and platform, and request
+  that cut if you don't have it.
+- **Calendar day or day since install:** never mix them in one comparison.
+- **Fixed cohorts:** a day-N curve uses the same installs on every day.
+- **Every segment:** check a general claim ("the median player…") against
+  each segment and platform before writing it.
 - **Event meaning:** check what the counter actually counts (bought or
   owned, started or completed, one route stop or the whole route) in the
-  code before naming the metric.
+  code before naming the metric. Read what an error code says before
+  inferring what the player did: "not purchased" is not a cancel.
+- **Odd shapes:** a dip or a curve that goes the wrong way often means
+  events fire out of order. Trace it in the code before using it as
+  evidence.
 
 ## Simulations
 
@@ -145,6 +160,11 @@ number of runs.
 **Defaults**, because the opposite choices overstate income by large
 factors:
 
+- Model every major source and sink, including the compounding ones
+  (investments, interest, dividends, offline income). A missing one hides
+  inflation.
+- Expose every pacing constant as a parameter from the start: day or clock
+  length, offline rate, caps and budgets, so a "what if" takes one run.
 - Feed it observed or benchmark inputs, such as the real attempts-per-level
   distribution, and label any input you assumed.
 - Pin behaviour inputs to live data: what players buy, when, how much they
@@ -171,6 +191,9 @@ play-time segment, within a stated tolerance (±25% by default).
 - Allow at most one fitted parameter per segment, such as the share of
   owned units in use. Label it `FITTED`, say what it was fitted to, and
   request the data that would measure it.
+- Calibrate the spread, not only the median: p50, p75 and p90. Compare the
+  modelled net-worth distribution with the observed one to catch
+  inflation.
 - Check the fit against a second target it wasn't fitted to, for example
   fit to level and then check income.
 - Without player data there's nothing to calibrate against: see

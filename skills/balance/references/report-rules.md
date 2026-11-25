@@ -9,11 +9,20 @@ The template's sections, in order. Delete the ones that are empty.
 
 - **In short:** at most 4 bullets.
 - **Live baseline** (SKILL.md step 1), with its unconfirmed values marked.
-- **Evidence:** the data exports (source, range, rows), the games
-  researched, the simulations (seed, runs, calibration status, which inputs
-  are assumed or fitted), and the segment definitions.
+- **Evidence:** the branch analysed, the data exports (source, range,
+  rows), the games researched, the agent playtest, the segment definitions,
+  and the simulations: seed, runs, what is calibrated and to which data,
+  what isn't, and which inputs are assumed or fitted.
 - **Recommendations:** the cards (below), in tier order.
 - **Enablers:** telemetry, gating code, test-evaluation rules.
+- **Roadmap:** every card and enabler placed in this order:
+  1. releases already in progress (newer branches with unreleased work);
+  2. measurement and telemetry;
+  3. bug fixes;
+  4. remote-config test waves: independent splits, each read on the
+     segment it targets;
+  5. changes that need a build (code constants) and new features;
+  6. later content.
 - **Sync:** what was synced to code, and the remote-config payload the user
   has to push, with a Copy button. Plain values only; a test gets one
   payload per group, named outside the JSON (conventions §5c).
@@ -53,6 +62,9 @@ The template's sections, in order. Delete the ones that are empty.
 
 ## Language
 
+- **Charts first, very little text,** unless *config: Balance → Report
+  style* says otherwise: one short lead sentence per section, and the
+  numbers in charts or headline figures, not in paragraphs.
 - Keep it short. Detail goes in the workbook's `Targets.notes`, not on the
   page. When a review adds findings, replace the old text; don't append to
   it.
@@ -62,10 +74,32 @@ The template's sections, in order. Delete the ones that are empty.
   to build", "Blocks option B", "Run A; B optional" or "Waiting on DR2".
   Never use a vague state like "Half passed".
 
+## Claims
+
+- **One cohort per sentence.** A caption's numbers come from the same
+  cohort as the chart under it.
+- **Check general claims against every segment** before writing them. A
+  claim that holds for heavy players only says so.
+- **Scope absence claims:** "none observed in the export", never "none
+  exist".
+- Competitor claims follow `benchmarks.md`.
+
 ## Charts
 
 Inline SVG or the template's CSS bars, with no chart libraries.
 
+- **Every mark can be identified without hovering.** No scatter or dot
+  charts that need hover for names. For many categories, use horizontal
+  bar rows with every label visible; when a row has two values, put two
+  columns of bars side by side.
+- **Per-day metrics by segment** default to grouped vertical bars, not
+  lines.
+- **Log scale** when values span more than two orders of magnitude.
+- **Different units** go in headline numbers, never on a shared bar chart.
+  Unrelated percentages go in tiles, not bars.
+- **Changing chart types:** when the user asks for a review of the charts,
+  propose the changes first, as a list or quick mock-ups, and apply them
+  after approval.
 - Use real units: levels, minutes, currency. Avoid indexes ("Today = 100")
   and compound ratios ("cash ÷ spend") unless they're the only fair
   comparison.
@@ -89,5 +123,25 @@ Run it before writing the file, and again before every update:
 - [ ] A claim that holds on one platform or segment only says so and names
       the exception.
 - [ ] Cards are in tier order, and every anchor link resolves.
-- [ ] Every link and workbook link opens, the page has no console errors,
-      and it has no horizontal scroll at 360 px.
+- [ ] Every link and workbook link opens, and the page has no console
+      errors.
+- [ ] **Render check** at desktop width and at 360 px. Headless Chrome
+      won't size a window below about 500 px, so check 360 px inside an
+      iframe. Look for horizontal scroll, long labels overflowing, crowded
+      ticks and colliding line-end labels.
+
+## Fact-check
+
+Before every write, after the consistency pass, have a reviewer that didn't
+write the page recheck it: a subagent where the host has one, otherwise a
+separate pass of your own against the source files. Give it the page and
+the data files, not your conclusions. It:
+
+- rechecks every number against the source files;
+- checks that each sentence, caption and chart uses one cohort (the
+  like-for-like checklist in `balance-checks.md`);
+- challenges every causal claim and every absence claim;
+- checks competitor claims against `benchmarks.md`.
+
+Fix what it finds before writing. Most reviewer corrections come from
+these rules.

@@ -109,6 +109,8 @@ guess silently.
     other personal data;
   - the file name to save it as, `YYYY-MM-DD_<title>_<scope>.csv`, in the
     data folder named in *config: Live data*.
+- **Never edit a request after the user has it.** A change gets a new id
+  (`DR5` → `DR5b`), with its version in the prompt and in the file name.
 - In HTML, each request is a `<div class="dr" data-dr="DR1"
   data-status="open">` with the prompt in a `<pre>` and a Copy button. In
   chat, each prompt is its own code block.

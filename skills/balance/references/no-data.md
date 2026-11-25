@@ -53,8 +53,8 @@ check takes the calibration gate's place.
   benchmarks.
 - **Future prompts:** the copy-ready data prompts to run once there is
   data, each with `data-status="future"`. Their date ranges say "the first
-  14 days with data, from the release or soft launch", since the dates
-  aren't known yet.
+  month of installs from the release or soft launch, read at D14 and D30",
+  since the dates aren't known yet.
 
 In chat, list the events still missing instead of the prompts, and end
 with: "Once there's player data, run `/gd:balance <system>` without
